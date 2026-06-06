@@ -115,6 +115,15 @@ The existing CLIENT DATABASE (`/Users/melo/Library/CloudStorage/GoogleDrive-.../
 DATABASE/`) + memory files + a thin seed `sops/` folder in this repo. The full knowledge
 base is a later subsystem.
 
+### Data sensitivity (conscious v1 decision)
+
+Storing operations in GitHub means full email-thread bodies and CLIENT DATABASE facts land
+in the repo (issue bodies, Forager plan comments, `outbox/*/reply.md`). **v1 decision:** the
+repo is **private** and single-user, so full content is stored **unredacted** — accepted as
+a deliberate trade for simplicity and fidelity, not an oversight. Guard's checks still scan
+the *outbound* reply for leaks (e.g., quoting another client). Redaction-at-rest of issue
+bodies is a later option, noted here so the choice is explicit, not implicit.
+
 ---
 
 ## 4. The first Flight — one email, ping → sent
@@ -155,10 +164,23 @@ Scout's next run sees the closed issue and won't re-open it (dedup by thread-id)
    `send`-scoped refresh token). Polls GitHub for merged `action:email-reply` PRs → sends via
    Gmail API → closes issue → `sent` receipt. Runs on a schedule; later can move into the hub
    / become always-on via Vercel.
+   - **Exactly-once send (hard requirement).** Double-sending a client email is real harm, so
+     the send must be idempotent against crashes and re-polls. Sequence per merged PR:
+     (a) check for a durable `sent` marker (issue label `sent` **and/or** committed
+     `outbox/NNNN-slug/.sent` receipt) — if present, **skip**; (b) flip issue to `sending`;
+     (c) send via Gmail; (d) **immediately** write the `sent` marker; (e) then close the issue
+     + post receipt (these are secondary — a crash here must NOT cause a resend because the
+     marker already exists). A PR found stuck in `sending` on restart **halts and alerts** —
+     it is never auto-resent; Rinaldo confirms whether it actually went out.
 7. **Hub Inbox page** — new read-only route in the hub that reads the GitHub API and renders
    the open issue queue + PR/Guard state. The single-glance board; links out to GitHub to
    act. (Read-only; no mutations from the browser.)
 8. **Scheduling** — cron to run the Scouts (via the schedule skill / CronCreate).
+
+**Build order (skeleton-first).** Prove the novel, risky path before adding breadth: build
+**email → PR → Guard → merge → real send (exactly-once)** end-to-end *first* (components
+1, 2, 4, 5, 6). Only once a single real email has gone out the door do we add the ClickUp
+Scout (3) and the Hub Inbox (7). Ingestion breadth and UI are additive once the loop holds.
 
 ---
 
@@ -170,6 +192,15 @@ Scout's next run sees the closed issue and won't re-open it (dedup by thread-id)
 - **In-hub merge UI** (v1 = review/merge in GitHub; hub is read-only)
 - **Metrics / director dashboards**
 - **Queen** autonomous orchestration
+
+### Known v1 limitations (accept or escalate)
+
+- **Merge-on-phone is not send-on-phone.** Review/merge is free and mobile (GitHub app), but
+  the executor runs on Rinaldo's Mac — so merging from a phone sends the email only when the
+  Mac is awake and next polls (could be deferred hours; sends in order on wake). If
+  near-real-time send from mobile is required, the executor must move to an always-on home
+  (hub on Vercel / a small always-on worker) sooner rather than later. **Needs Rinaldo's
+  explicit OK in v1.**
 
 ---
 
@@ -208,6 +239,8 @@ Scout's next run sees the closed issue and won't re-open it (dedup by thread-id)
   PR with a Guard PASS — without manual intervention up to the merge gate.
 - Merging that PR causes the email to actually send, the issue to close, and a receipt to
   post.
+- **Exactly-once:** no inbound email ever produces two outbound sends, even across executor
+  crashes, restarts, or re-polls.
 - ClickUp pings appear as issues in the same queue (watch-only).
 - The hub Inbox shows the live queue from the GitHub API.
 - No duplicate issues across Scout runs.

@@ -32,7 +32,7 @@ Legend: ✅ present · ⚠️ partial/constrained · ❌ absent.
 
 ## Reachability reality (and why it matters)
 
-This session: **ClickUp, Fireflies, NotebookLM, Figma = connected.** **Gmail, Slack, Calendar, Drive (the claude.ai suite) = not connected.** The session-start note warns claude.ai MCPs "may be absent in headless/cron runs." Implication for the build:
+This session: **ClickUp, Fireflies, Figma = connected.** **Gmail, Slack, Calendar, Drive (the claude.ai suite) = not connected.** The session-start note warns claude.ai MCPs "may be absent in headless/cron runs." Implication for the build:
 
 - Anything that must run **unattended/scheduled** (a Slack scout, an email scout, draft-on-merge) needs the claude.ai MCP **reliably reachable in that execution context** — which is not guaranteed today. This is a foundational dependency to resolve, separate from the application logic.
 - ClickUp automation (the missing write-back loop) has **no such dependency** — its MCP is reachable now. That makes ClickUp write-back the lowest-friction first automation to actually run.

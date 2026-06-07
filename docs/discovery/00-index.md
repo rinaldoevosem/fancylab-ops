@@ -17,7 +17,7 @@ Each tool folder follows the same template: `00-overview` · `01-structure` · `
 
 ## Three cross-cutting findings (detail in `cross-tool.md`)
 
-1. **Reachability split (this session).** Only **ClickUp, Fireflies, NotebookLM, Figma** were live. The **claude.ai MCP suite — Gmail, Slack, Calendar, Drive — was not connected.** So live capture (and any future automated action) for email and Slack depends on that suite being reachable in the operating context. Email/Slack here were documented from their existing agents, with the live layer marked `[CAPTURE WHEN CONNECTED]`.
+1. **Reachability split (this session).** Only **ClickUp, Fireflies, Figma** were live. The **claude.ai MCP suite — Gmail, Slack, Calendar, Drive — was not connected.** So live capture (and any future automated action) for email and Slack depends on that suite being reachable in the operating context. Email/Slack here were documented from their existing agents, with the live layer marked `[CAPTURE WHEN CONNECTED]`.
 2. **Maturity asymmetry.** Email is the reference model (Scout + draft implementation + a self-tuning memory loop). ClickUp has intake but **no write-back loop**. Slack has only partial intake and no scout/implementation/memory.
 3. **No cross-tool linkage.** Nothing ties the same client's Slack thread ↔ Gmail thread ↔ ClickUp task together. The one cross-tool synthesizer, `client-agent`, reads all sources per-client on demand but persists nothing as a shared graph.
 

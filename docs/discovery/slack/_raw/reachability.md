@@ -23,7 +23,7 @@ via `ToolSearch`. Five queries were run:
 ## Cross-check against the deferred-tools inventory
 
 The session's deferred-tools `<system-reminder>` was scanned directly. Every `mcp__*`
-entry belongs to: `clickup`, `fireflies`, `notebooklm-mcp`, `plugin_figma_figma`, or
+entry belongs to: `clickup`, `fireflies`, `plugin_figma_figma`, or
 `plugin_vercel_vercel`. **Zero `mcp__claude_ai_Slack__*` entries exist.** Slack is not
 deferred-but-available here — it is absent from this context entirely.
 

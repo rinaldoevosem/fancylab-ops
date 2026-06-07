@@ -7,7 +7,7 @@
 
 ## Reachability — decisive, up top
 
-**Gmail was NOT reachable in this discovery session.** The claude.ai Gmail MCP is declared in `email-agent` / `email-scout` frontmatter, but the live tools were **not loaded into this session's tool surface** — `ToolSearch` for `mcp__claude_ai_Gmail__*` returned nothing on every probe. (Same story as Slack, confirmed unreachable this session; the whole claude.ai MCP suite — Gmail / Slack / Calendar / Drive — appears absent. The MCPs live this session are ClickUp, Fireflies, NotebookLM, Figma, Vercel.)
+**Gmail was NOT reachable in this discovery session.** The claude.ai Gmail MCP is declared in `email-agent` / `email-scout` frontmatter, but the live tools were **not loaded into this session's tool surface** — `ToolSearch` for `mcp__claude_ai_Gmail__*` returned nothing on every probe. (Same story as Slack, confirmed unreachable this session; the whole claude.ai MCP suite — Gmail / Slack / Calendar / Drive — appears absent. The MCPs live this session are ClickUp, Fireflies, Figma, Vercel.)
 
 Consequence: **live label inventory and inbox volume are templated `[CAPTURE WHEN CONNECTED]`.** Everything else here is consolidated from the mature existing email assets, which do not need a live connection. See `_raw/reachability.md` for the full probe log.
 
